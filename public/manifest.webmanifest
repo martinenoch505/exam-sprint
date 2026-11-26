@@ -1,0 +1,9 @@
+{
+  "name": "Exam Sprint",
+  "short_name": "ExamSprint",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f6ef",
+  "theme_color": "#125842",
+  "description": "Rapid-review university theory exam prep."
+}

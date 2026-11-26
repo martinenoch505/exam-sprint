@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#125842">
+    <title>Exam Sprint</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <main class="app-shell">
+        <header class="app-header"><a class="brand" href="/" aria-label="Exam Sprint home"><span
+                    class="brand-mark">ES</span><span>Exam Sprint</span></a>
+            <div class="course-meta"><strong id="header-course">Your study space</strong><span
+                    class="status-dot"><i></i> Ready</span></div>
+        </header>
+        <section class="hero">
+            <div>
+                <p class="eyebrow">University theory exam prep</p>
+                <h1>Make the last hours count.</h1>
+                <p>Bring your notes. Leave with a focused study pack built around your own course.</p>
+            </div>
+            <div class="exam-badges"><span id="badge-date">Set your exam date</span><span id="badge-type">Theory
+                    exam</span></div>
+        </section>
+        <section class="setup-card" id="setup-card" aria-labelledby="setup-title">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Build your pack</p>
+                    <h2 id="setup-title">What are you preparing for?</h2>
+                </div><span class="step-pill">1 · Upload</span>
+            </div>
+            <form id="pack-form" class="mode-topic">
+                <div class="mode-switch" role="tablist" aria-label="Input mode"><button type="button"
+                        class="mode-tab active" id="mode-topic-btn" role="tab" aria-selected="true"
+                        data-mode="topic">Study a Topic</button><button type="button" class="mode-tab"
+                        id="mode-notes-btn" role="tab" aria-selected="false" data-mode="notes">Paste Notes</button>
+                </div>
+                <div class="field-grid"><label id="course-label"><span id="course-label-text">Topic to
+                            study</span><input id="course" name="course" required maxlength="100" autocomplete="off"
+                            placeholder="e.g. Virtual Memory or Normalization"></label><label id="topic-context-field"
+                        class="topic-only"><span id="context-label-text">Optional context / focus</span><input
+                            id="topic-context" name="topicContext" maxlength="200" autocomplete="off"
+                            placeholder="e.g. Focus on edge cases and exam traps"></label><label>Exam date<input
+                            id="exam-date" name="examDate" type="date"></label><label>Exam format<select id="exam-type"
+                            name="examType">
+                            <option>Essay / theory</option>
+                            <option>Mixed exam</option>
+                            <option>Multiple choice</option>
+                        </select></label></div>
+                <input id="files" name="files" type="file" multiple hidden
+                    accept="image/jpeg,image/png,image/webp,application/pdf,text/plain"><input id="camera" type="file"
+                    hidden accept="image/jpeg,image/png,image/webp" capture="environment">
+                <div class="dropzone notes-only" id="dropzone" tabindex="0" role="button"
+                    aria-label="Choose note files">
+                    <div class="dropzone-icon">↑</div><strong>Drop notes here</strong><span>Images, PDFs, or text · up
+                        to 30 files · 8 MB each</span>
+                    <div class="upload-actions"><button class="button button-secondary" type="button"
+                            id="choose-files">Choose files</button><button class="button button-secondary" type="button"
+                            id="snap-notes">⌁ Snap Notes</button></div>
+                </div>
+                <div class="file-chips notes-only" id="file-chips" aria-live="polite"></div>
+                <label class="notes-only" id="pasted-notes-label"><span>Or paste your notes</span><textarea
+                        id="pasted-notes" name="pastedNotes" maxlength="50000"
+                        placeholder="Paste typed notes here if you do not have files to upload."></textarea></label>
+                <label class="consent notes-only" id="consent-label"><input id="consent" name="consent" type="checkbox"
+                        checked required><span>I have permission to upload these materials for AI study-pack
+                        generation.</span></label><button class="button button-primary generate" id="submit"
+                    type="submit"><span>Generate Study Pack</span><b>→</b></button>
+                <p class="form-status" id="status" role="status"></p>
+            </form>
+        </section>
+        <section class="loading" id="loading" hidden aria-live="polite">
+            <div class="spinner"></div>
+            <div>
+                <p class="eyebrow">Building your pack</p>
+                <h2>Reading your materials…</h2>
+                <p>Extracting concepts, making flashcards, and preparing practice questions.</p>
+            </div>
+            <div class="skeletons"><i></i><i></i><i></i></div>
+        </section>
+        <section class="workspace" id="workspace" hidden>
+            <div class="workspace-head">
+                <div>
+                    <p class="eyebrow">Your study pack</p>
+                    <h2 id="workspace-course">Course</h2>
+                </div><button id="new-pack" class="button button-secondary" type="button">New pack</button>
+            </div>
+            <nav class="tabs" aria-label="Study pack sections"><button class="tab active" type="button"
+                    data-tab="summary">Summary</button><button class="tab" type="button"
+                    data-tab="flashcards">Flashcards</button><button class="tab" type="button" data-tab="quiz">Practice
+                    quiz</button><button class="tab" type="button" data-tab="export">Save & export</button></nav>
+            <section class="panel active" data-panel="summary">
+                <div class="summary-card">
+                    <p class="eyebrow">Executive summary</p>
+                    <p class="summary-text" id="course-summary"></p>
+                    <p class="source-note" id="source-note"></p>
+                </div>
+                <div class="two-column">
+                    <article class="content-card">
+                        <h3>Core concepts</h3>
+                        <dl id="key-terms"></dl>
+                    </article>
+                    <article class="content-card">
+                        <h3>Exam traps &amp; rules</h3>
+                        <ol class="plan-list" id="study-plan"></ol>
+                    </article>
+                </div>
+            </section>
+            <section class="panel" data-panel="flashcards">
+                <div class="flashcard-top">
+                    <div>
+                        <p class="eyebrow">Active recall</p>
+                        <h3 id="card-counter">Card 1</h3>
+                    </div><span id="card-progress">0 / 0</span>
+                </div><button class="flashcard" id="flashcard" type="button" aria-label="Flip flashcard"><span
+                        class="card-face card-front"><small>QUESTION · TAP TO FLIP</small><strong
+                            id="card-question"></strong></span><span class="card-face card-back"><small>ANSWER · TAP TO
+                            FLIP</small><strong id="card-answer"></strong></span></button>
+                <div class="flashcard-actions"><button class="button button-secondary" type="button"
+                        id="review-card">Review later</button><button class="button button-primary" type="button"
+                        id="got-card">Got it ✓</button></div>
+            </section>
+            <section class="panel" data-panel="quiz">
+                <div class="quiz-top">
+                    <div>
+                        <p class="eyebrow">Practice quiz</p>
+                        <h3 id="quiz-count">Question</h3>
+                    </div><span id="quiz-score">0 correct</span>
+                </div>
+                <article class="quiz-card">
+                    <p id="quiz-question"></p>
+                    <fieldset id="quiz-options">
+                        <legend class="sr-only">Answer options</legend>
+                    </fieldset>
+                    <p class="quiz-feedback" id="quiz-feedback" role="status"></p><button class="text-button"
+                        id="toggle-explanation" type="button" hidden>Show explanation</button>
+                    <p class="explanation" id="quiz-explanation" hidden></p>
+                </article><button class="button button-primary" id="next-question" type="button">Next question
+                    →</button>
+            </section>
+            <section class="panel" data-panel="export">
+                <div class="export-card">
+                    <p class="eyebrow">Take it with you</p>
+                    <h3>Save this study pack</h3>
+                    <p>Your pack stays only in this browser when saved locally.</p>
+                    <div class="export-actions"><button class="button button-primary" type="button" id="save-local">Save
+                            on this device</button><button class="button button-secondary" type="button"
+                            id="print-pack">Print summary</button></div>
+                    <p class="form-status" id="save-status" role="status"></p>
+                </div>
+            </section>
+        </section>
+    </main>
+    <script src="/app.js"></script>
+</body>
+
+</html>
